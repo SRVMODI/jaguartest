@@ -89,7 +89,7 @@
                         <div class="login-box">
                             <div class="login-box-msg">
                                 <asp:Image ID="imgLogo1" runat="server" ImageUrl="~/Images/p_g-logo.png" alt="RRD Logo" class="logo1" />
-                                <h3 class="title">User Login</h3>
+                                <h3 class="title">User SingIn</h3>
                             </div>
                             <div class="login-box-body clearfix">
                                 <div class="input-group frm-group-txt">
