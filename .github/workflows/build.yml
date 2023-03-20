@@ -8,7 +8,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 env:
-  DOTNET_VERSION: 5.2.1
+  DOTNET_VERSION: 6.0.407
   
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
