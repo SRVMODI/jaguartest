@@ -18,8 +18,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: echo MSBuild
-      run: msbuild -version
     - name: Build and analyze
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
