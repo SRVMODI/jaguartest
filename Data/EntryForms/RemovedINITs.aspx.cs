@@ -135,6 +135,7 @@ public partial class _RemovedINITs : System.Web.UI.Page
         Scmd.Connection = Scon;
         Scmd.CommandText = "[spINITGetINITMatser]";
         Scmd.Parameters.AddWithValue("@LoginID", hdnLoginID.Value);
+        Scmd.Parameters.AddWithValue("@UserID", hdnUserID.Value);
         Scmd.CommandType = CommandType.StoredProcedure;
         Scmd.CommandTimeout = 0;
         Sdap = new SqlDataAdapter(Scmd);

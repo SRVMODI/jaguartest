@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Data/MasterPages/site.master" AutoEventWireup="true" CodeFile="Initiative.aspx.cs" Inherits="_BucketMstr" ValidateRequest="false" %>
-
+<%--Test--%>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
     <link href="../../Styles/Multiselect/jquery.multiselect.css" rel="stylesheet" type="text/css" />
     <link href="../../Styles/Multiselect/jquery.multiselect.filter.css" rel="stylesheet" type="text/css" />
@@ -206,7 +206,7 @@
                 $("#tblReport").find("tbody").eq(0).find("tr[iden='Init']").each(function () {
                     flgValid = 1;
                     for (var t = 0; t < filter.length; t++) {
-                        if ($(this).find("td").eq(18).html().toUpperCase().indexOf(filter[t].toString().trim()) == -1) {
+                        if ($(this).find("td").eq(20).html().toUpperCase().indexOf(filter[t].toString().trim()) == -1) {
                             flgValid = 0;
                         }
                     }
@@ -1240,7 +1240,10 @@
                 str += "<td iden='Init'><select>" + $("#ConatntMatter_hdnIncentiveType").val() + "</select></td>";
                 str += "<td iden='Init'><select>" + $("#ConatntMatter_hdnMultiplicationType").val() + "</select></td>";
                 str += "<td iden='Init'><input type='checkbox' checked/>Leap<br/><input type='checkbox' checked/>SubD</td>";
+                str += "<td iden='Init'><select onchange='fnCOHbasedOnInitType(this);'>" + $("#ConatntMatter_hdnInitTypes").val().split("^")[0] + "</select></td>";
+                str += "<td iden='Init'><select>" + $("#ConatntMatter_hdnCOHType").val().split("^")[0] + "</select></td>";
                 str += "<td iden='Init'><input type='checkbox'/></td>";
+                str += "<td iden='Init'></td>";
                 str += "<td iden='Init'></td>";
                 str += "<td iden='Init'></td>";
                 str += "</tr>";
@@ -1268,6 +1271,11 @@
 
                 $("#tblReport").find("tbody").eq(0).find("tr[iden='Init']").eq(0).find("td[iden='Init']").eq(11).find("select").eq(0).val("1");
                 $("#tblReport").find("tbody").eq(0).find("tr[iden='Init']").eq(0).find("td[iden='Init']").eq(13).find("select").eq(0).val("2");
+                $("#tblReport").find("tbody").eq(0).find("tr[iden='Init']").eq(0).find("td[iden='Init']").eq(15).find("select").eq(0).val($("#ConatntMatter_hdnInitTypes").val().split("^")[1]);
+                fnCOHbasedOnInitType($("#tblReport").find("tbody").eq(0).find("tr[iden='Init']").eq(0).find("td[iden='Init']").eq(15).find("select")[0]);
+
+                //$("#tblReport").find("tbody").eq(0).find("tr[iden='Init']").eq(0).find("td[iden='Init']").eq(16).find("select").eq(0).val($("#ConatntMatter_hdnCOHType").val().split("^")[1]);
+
 
                 $("#divButtons").find("a.btn[flgAction='100']").removeClass("btn-disabled").attr("onclick", "fnSaveFinalAction(this);");
             }
@@ -1295,6 +1303,8 @@
             var Multiplication = rttr.attr("Multiplication");
             var IncludeSubD = rttr.attr("IncludeSubD");
             var IncludeLeap = rttr.attr("IncludeLeap");
+            var InitType = rttr.attr("InitType");
+            var COHType = rttr.attr("COHType");
             var MixedCases = rttr.attr("MixedCases");
             var strBase = rttr.attr("BaseProd");
             var strInit = rttr.attr("InitProd");
@@ -1401,14 +1411,22 @@
             else
                 tr.find("td[iden='Init']").eq(14).html("<input type='checkbox'/>Leap<br/><input type='checkbox'/>SubD");
 
+
+            tr.find("td[iden='Init']").eq(15).html("<select onchange='fnCOHbasedOnInitType(this);'>" + $("#ConatntMatter_hdnInitTypes").val().split("^")[0] + "</select>");
+            tr.find("td[iden='Init']").eq(16).html("<select>" + $("#ConatntMatter_hdnCOHType").val().split("^")[0] + "</select>");
+            tr.find("td[iden='Init']").eq(15).find("select").eq(0).val(InitType.split("^")[0]);
+            fnCOHbasedOnInitType(tr.find("td[iden='Init']").eq(15).find("select")[0]);
+            tr.find("td[iden='Init']").eq(16).find("select").eq(0).val(COHType.split("^")[0]);
+
             if (MixedCases == "1")
-                tr.find("td[iden='Init']").eq(15).html("<input type='checkbox' checked/>");
+                tr.find("td[iden='Init']").eq(17).html("<input type='checkbox' checked/>");
             else
-                tr.find("td[iden='Init']").eq(15).html("<input type='checkbox'/>");
+                tr.find("td[iden='Init']").eq(17).html("<input type='checkbox'/>");
 
             if (cntr == 2) {
-                tr.find("td[iden='Init']").eq(16).html("");
-                tr.find("td[iden='Init']").eq(17).html("");
+                tr.find("td[iden='Init']").eq(18).html("");
+                tr.find("td[iden='Init']").eq(19).html("");
+                tr.find("td[iden='Init']").eq(20).html("");
             }
 
             lefttr.find("textarea").eq(0).css("height", "auto");
@@ -1456,11 +1474,14 @@
                 var Multiplication = tr.attr("Multiplication");
                 var IncludeSubD = tr.attr("IncludeSubD");
                 var IncludeLeap = tr.attr("IncludeLeap");
+                var InitType = tr.attr("InitType");
+                var COHType = tr.attr("COHType");
                 var MixedCases = tr.attr("MixedCases");
                 var flgRejectComment = tr.attr("flgRejectComment");
                 var flgBookmark = tr.attr("flgBookmark");
                 var flgCheckBox = tr.attr("flgCheckBox");
                 var flgSettle = tr.attr("flgSettle");
+
 
                 var strAppRule = "<div style='width: 120px; min-width: 120px; text-align: center;'><a href='#' class='btn btn-primary btn-small' onclick='fnShowApplicationRulesPopupNonEditable(this);'>View Details</a><div>";
                 if (tr.attr("BaseProd") == "") {
@@ -1571,10 +1592,13 @@
                 else
                     tr.find("td[iden='Init']").eq(14).html("");
 
+                tr.find("td[iden='Init']").eq(15).html(InitType.split("^")[1]);
+                tr.find("td[iden='Init']").eq(16).html(COHType.split("^")[1]);
+                
                 if (MixedCases == "1")
-                    tr.find("td[iden='Init']").eq(15).html("Yes");
+                    tr.find("td[iden='Init']").eq(17).html("Yes");
                 else
-                    tr.find("td[iden='Init']").eq(15).html("No");
+                    tr.find("td[iden='Init']").eq(17).html("No");
 
                 tr.attr("flgEdit", "0");
                 lefttr.attr("flgEdit", "0");
@@ -1624,15 +1648,21 @@
             var Disburshment = rttr.find("td[iden='Init']").eq(11).find("select").eq(0).val();
             var IncentiveType = rttr.find("td[iden='Init']").eq(12).find("select").eq(0).val();
             var Multiplication = rttr.find("td[iden='Init']").eq(13).find("select").eq(0).val();
+
             var IncudeLeap = 0;
             if (rttr.find("td[iden='Init']").eq(14).find("input[type='checkbox']").eq(0).is(":checked"))
                 IncudeLeap = 1;
             var IncudeSubD = 0;
             if (rttr.find("td[iden='Init']").eq(14).find("input[type='checkbox']").eq(1).is(":checked"))
                 IncudeSubD = 1;
+
+            var InitType = rttr.find("td[iden='Init']").eq(15).find("select").eq(0).val();
+            var COH = rttr.find("td[iden='Init']").eq(16).find("select").eq(0).val();
+
             var MixedCases = 0;
-            if (rttr.find("td[iden='Init']").eq(15).find("input[type='checkbox']").eq(0).is(":checked"))
+            if (rttr.find("td[iden='Init']").eq(17).find("input[type='checkbox']").eq(0).is(":checked"))
                 MixedCases = 1;
+
             var Bucket = [];
             var BucketValues = [];
             var LoginID = $("#ConatntMatter_hdnLoginID").val();
@@ -1698,6 +1728,14 @@
             }
             else if (Multiplication == "0") {
                 AutoHideAlertMsg("Please select the To Multiplication Type !");
+                return false;
+            }
+            else if (InitType == "0") {
+                AutoHideAlertMsg("Please select the To Initiative Type !");
+                return false;
+            }
+            else if (COH == "0" && (InitType == "2" || InitType == "3")) {
+                AutoHideAlertMsg("Please select the To COH Type !");
                 return false;
             }
             else {
@@ -1804,7 +1842,7 @@
                 }
 
                 $("#dvloader").show();
-                PageMethods.fnSave(INITID, INITCode, INITName, INITShortDescr, INITDescription, AmtLimit, CountLimit, FromDate, ToDate, Bucket, BucketValues, LoginID, strLocation + "|||" + copyLocationBucketID, strChannel + "|||" + copyChannelBucketID, Disburshment, Multiplication, IncudeLeap, IncudeSubD, BasePrdMain, BasePrdDetail, BenefitPrdMain, BenefitPrdDetail, UserID, MixedCases, flgSave, ApplicableNewPer, IncentiveType, fnSave_pass, fnfailed, cntr)
+                PageMethods.fnSave(INITID, INITCode, INITName, INITShortDescr, INITDescription, AmtLimit, CountLimit, FromDate, ToDate, Bucket, BucketValues, LoginID, strLocation + "|||" + copyLocationBucketID, strChannel + "|||" + copyChannelBucketID, Disburshment, Multiplication, IncudeLeap, IncudeSubD, BasePrdMain, BasePrdDetail, BenefitPrdMain, BenefitPrdDetail, UserID, MixedCases, flgSave, ApplicableNewPer, IncentiveType, InitType, COH, fnSave_pass, fnfailed, cntr)
             }
         }
         function fnSave_pass(res, cntr) {
@@ -2282,6 +2320,16 @@
 
             str += "</div>";
             return str;
+        }
+
+        function fnCOHbasedOnInitType(ctrl) {
+            $(ctrl).closest("td").next().find("select").eq(0).val("0");
+            if ($(ctrl).val() == "2" || $(ctrl).val() == "3") {
+                $(ctrl).closest("td").next().find("select").eq(0).removeAttr("disabled");
+                $(ctrl).closest("td").next().find("select").eq(0).val($("#ConatntMatter_hdnCOHType").val().split("^")[1]);
+            }
+            else
+                $(ctrl).closest("td").next().find("select").eq(0).prop("disabled", true);
         }
     </script>
     <script type="text/javascript">
@@ -3808,7 +3856,7 @@
             str += "<tr grpno='1' IsNewGrp='1'>";
             str += "<td style='text-align: center; font-weight: 700;'>Group 1</td>";
             str += "<td><div style='position: relative; box-sizing: border-box;'><div iden='content' style='width: 100%; padding-right: 50px;'>Select Products Applicable in Group</div><div style='position: absolute; right:5px; top:-3px;'><img src='../../Images/favBucket.png' title='Favourite Bucket' onclick='fnAppRuleShowCopyBucketPopup(this, 2);'/><img src='../../Images/edit.png' title='Define New Selection' iden='ProductHier' copybuckettd='0' prodlvl='' prodhier='' onclick='fnAppRuleShowProdHierPopup(this, 1, 2);' style='margin-left:5px;'/></div></div></td>";
-            str += "<td><select onchange='fnConditionChkDropdown(this);'>" + $("#ConatntMatter_hdnInitType").val() + "</select></td>";
+            str += "<td><select onchange='fnConditionChkDropdown(this);'>" + $("#ConatntMatter_hdnUnitType").val() + "</select></td>";
             str += "<td><input type='text'/></td>";
             str += "<td><input type='text'/></td>";
             str += "<td><select disabled>" + $("#ConatntMatter_hdnUOM").val() + "</select></td>";
@@ -3978,7 +4026,7 @@
                                 str += ArrPrd[k].split("|")[2];
                             }
                             str += "</td>";
-                            str += "<td><select defval='" + ArrGrp[j].split("*$*")[0] + "' disabled>" + $("#ConatntMatter_hdnInitType").val() + "</select></td>";
+                            str += "<td><select defval='" + ArrGrp[j].split("*$*")[0] + "' disabled>" + $("#ConatntMatter_hdnUnitType").val() + "</select></td>";
                             str += "<td>" + ArrGrp[j].split("*$*")[1] + "</td>";
                             str += "<td>" + ArrGrp[j].split("*$*")[2] + "</td>";
                             str += "<td><select defval='" + ArrGrp[j].split("*$*")[3] + "' disabled>" + $("#ConatntMatter_hdnUOM").val() + "</select></td>";
@@ -4757,6 +4805,10 @@
         }
     </script>
     <style type="text/css">
+        select {
+            width: 100%;
+        }
+
         .clsInform {
             word-break: break-all;
             white-space: inherit;
@@ -4967,15 +5019,22 @@
         }
 
         table.clsReport tr td:nth-child(15),
-        table.clsReport tr td:nth-child(16) {
+        table.clsReport tr td:nth-child(18) {
             width: 72px;
             min-width: 72px;
         }
 
-        table.clsReport tr td:nth-child(17),
-        table.clsReport tr td:nth-child(18) {
+        table.clsReport tr td:nth-child(16),
+        table.clsReport tr td:nth-child(19),
+        table.clsReport tr td:nth-child(20) {
             width: 140px;
             min-width: 140px;
+        }
+
+        table.clsReport tr td:nth-child(17),
+        table.clsReport tr td:nth-child(22) {
+            width: 84px;
+            min-width: 84px;
         }
 
         #divReport td.clstdAction {
@@ -4999,7 +5058,12 @@
         table.clsReport tr td:nth-child(13),
         table.clsReport tr td:nth-child(14),
         table.clsReport tr td:nth-child(15),
-        table.clsReport tr td:nth-child(16) {
+        table.clsReport tr td:nth-child(16),
+        table.clsReport tr td:nth-child(17),
+        table.clsReport tr td:nth-child(18),
+        table.clsReport tr td:nth-child(19),
+        table.clsReport tr td:nth-child(20),
+        table.clsReport tr td:nth-child(22) {
             text-align: center;
         }
 
@@ -5151,12 +5215,12 @@
             table.clsInitiativeLst th:nth-child(3) {
                 width: 10%;
             }
-            
+
             table.clsInitiativeLst th:nth-child(2),
             table.clsInitiativeLst th:nth-child(3) {
                 width: 10%;
             }
-            
+
             table.clsInitiativeLst th:nth-child(6),
             table.clsInitiativeLst th:nth-child(7) {
                 width: 24%;
@@ -5471,7 +5535,9 @@
     <asp:HiddenField ID="hdnDisburshmentType" runat="server" />
     <asp:HiddenField ID="hdnIncentiveType" runat="server" />
     <asp:HiddenField ID="hdnMultiplicationType" runat="server" />
-    <asp:HiddenField ID="hdnInitType" runat="server" />
+    <asp:HiddenField ID="hdnUnitType" runat="server" />
+    <asp:HiddenField ID="hdnInitTypes" runat="server" />
+    <asp:HiddenField ID="hdnCOHType" runat="server" />
     <asp:HiddenField ID="hdnUOM" runat="server" />
     <asp:HiddenField ID="hdnBenefit" runat="server" />
     <asp:HiddenField ID="hdnAppliedOn" runat="server" />

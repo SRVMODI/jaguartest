@@ -20,6 +20,53 @@
             }
             return (dat + "-" + MonthArr[d.getMonth()] + "-" + d.getFullYear());
         }
+
+        function whichButton(event) {
+            if (event.button == 2)//RIGHT CLICK
+                AutoHideAlertMsg("Not Allow Right Click!");
+        }
+        function noCTRL(e) {
+            var code = (document.all) ? event.keyCode : e.which;
+            var msg = "Sorry, this functionality is disabled.";
+            if (parseInt(code) == 17) //CTRL
+            {
+                AutoHideAlertMsg(msg);
+                window.event.returnValue = false;
+            }
+        }
+        function isNumberKeyNotDecimal(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                AutoHideAlertMsg("Only Numeric value allowed !");
+                return false;
+            }
+            return true;
+        }
+        function isNumericWithOneDecimal(evt, ctrl) {
+            var msg = "Please enter only numeric values.";
+            if (!(evt.keyCode == 46 || (evt.keyCode >= 48 && evt.keyCode <= 57))) {
+                ValidationTooltip(ctrl, msg);
+                return false;
+            }
+
+            var parts = evt.srcElement.value.split('.');
+            if (parts.length > 2) {
+                ValidationTooltip(ctrl, msg);
+                return false;
+            }
+
+            if (evt.keyCode == 46)
+                return (parts.length == 1);
+
+            if (evt.keyCode != 46) {
+                var currVal = String.fromCharCode(evt.keyCode);
+                var strVal = parseFloat(String(parts[0]) + String(currVal));
+                if (parts.length == 2)
+                    strVal = parseFloat(String(parts[0]) + "." + String(currVal));
+            }
+            return true;
+        }
+
         function AddZero(str) {
             if (str.toString().length == 1)
                 return "0" + str;
@@ -37,6 +84,7 @@
             }
             return lvl;
         }
+
         function Tooltip(container) {
             $(container).hover(function () {
                 // Hover over code
@@ -84,6 +132,23 @@
             }, 3500);
 
         }
+        function ValidationTooltip(ctrl, msg) {
+            fnRemoveValidationTooltip();
+            //$("#divContainer").scrollTop(0);
+            //$("#divContainer").scrollTop($(ctrl).offset().top - 130);
+
+            $('<p class="validatetooltip"><span style="display:table-cell">' + msg + '</span><i class="fa fa-times clsClosetooltip" onclick="fnRemoveValidationTooltip();"></i></p>')
+                //.html(msg)
+                .appendTo('body')
+                .show();
+            $('.validatetooltip')
+                .css({ top: $(ctrl).offset().top + 30, left: $(ctrl).offset().left + 15 });
+
+        }
+        function fnRemoveValidationTooltip() {
+            $(".validatetooltip").remove();
+        }
+
         function fnfailed() {
             AutoHideAlertMsg("Due to some technical reasons, we are unable to process your request !");
             $("#dvloader").hide();
@@ -3000,7 +3065,7 @@
             var str = "<tr strId='0' IsNew='1'>";
             str += "<td><div style='position: relative; box-sizing: border-box;'><div iden='content' style='width: 100%; padding-right: 50px;'>Select Products Applicable in Group</div><div style='position: absolute; right:5px; top:-3px;'><img src='../../Images/favBucket.png' title='Favourite Bucket' onclick='fnAppRuleShowCopyBucketPopup(this, 2);'/><img src='../../Images/edit.png' title='Define New Selection' iden='ProductHier' copybuckettd='0' prodlvl='' prodhier='' onclick='fnAppRuleShowProdHierPopup(this, 1, 2);' style='margin-left:5px;'/></div></div></td>";
             str += "<td><select onchange='fnConditionChkDropdown(this);'>" + $("#ConatntMatter_hdnInitType").val() + "</select></td>";
-            str += "<td><input type='text' value='0'/></td>";
+            str += "<td><input type='text' value='0' onkeypress='return isNumberKeyNotDecimal(event, this)' onmousedown='whichButton(event)' onkeydown='return noCTRL(event)'/></td>";
             str += "<td><select disabled>" + $("#ConatntMatter_hdnUOM").val() + "</select></td>";
             str += "<td style='text-align: center;'><i class='fa fa-plus clsExpandCollapse' onclick='AddNewFBProdRow(this, 2);'></i><i class='fa fa-minus clsExpandCollapse' onclick='RemoveFBProdRow(this);'></i></td>";
             str += "</tr>";
@@ -3959,7 +4024,7 @@
                         strtable += "<tr clusterId='" + Arr[i].split("^")[0] + "' iden='cluster-mapping'>";
                         strtable += "<td iden='cluster-mapping'>" + (i + 1).toString() + "</td>";
                         strtable += "<td iden='cluster-mapping'>" + Arr[i].split("^")[1] + "</td>";
-                        strtable += "<td iden='cluster-mapping'><input type='text' value='" + Arr[i].split("^")[2] + "'/></td>";
+                        strtable += "<td iden='cluster-mapping'><input type='text' onkeypress='return isNumberKeyNotDecimal(event, this)' onmousedown='whichButton(event)' onkeydown='return noCTRL(event)' value='" + Arr[i].split("^")[2] + "'/></td>";
                         strtable += "<td iden='cluster-mapping'><select iden='coh' style='width:98%;' defval='" + Arr[i].split("^")[3] + "'>" + $("#ConatntMatter_hdnCOHMstr").val() + "</select></td>";
 
                         var strSector = "";
@@ -3982,7 +4047,7 @@
                         strtable += "<tr clusterId='" + Arr[i].split("|")[0] + "' iden='cluster-mapping'>";
                         strtable += "<td iden='cluster-mapping'>" + (i + 1).toString() + "</td>";
                         strtable += "<td iden='cluster-mapping'>" + Arr[i].split("|")[1] + "</td>";
-                        strtable += "<td iden='cluster-mapping'><input type='text' value=''/></td>";
+                        strtable += "<td iden='cluster-mapping'><input type='text' onkeypress='return isNumberKeyNotDecimal(event, this)' onmousedown='whichButton(event)' onkeydown='return noCTRL(event)' value=''/></td>";
                         strtable += "<td iden='cluster-mapping'><select iden='coh' style='width:98%;' defval='0'>" + $("#ConatntMatter_hdnCOHMstr").val() + "</select></td>";
 
                         strtable += "<td iden='cluster-mapping'><div style='position: relative;'><input type='text' iden='sector' value='' selectedstr='' title='' onkeyup='fnShowSectorPopup(this);' onclick='fnShowSectorPopup(this);' readonly='readonly'/><div class='popup-sector'>" + $("#ConatntMatter_hdnSectorMstr").val() + "<div style='text-align: right; margin: 0.1rem 0.3rem;'><a class='btn btn-primary btn-small' onclick='fnHideSectorPopup();'>OK</a></div></div></div></td>";

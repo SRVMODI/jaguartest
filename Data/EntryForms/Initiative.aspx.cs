@@ -180,7 +180,7 @@ public partial class _BucketMstr : System.Web.UI.Page
         {
             sbMstr.Append("<option value='" + Ds.Tables[3].Rows[i]["INITTypeID"].ToString() + "' uom='" + Ds.Tables[3].Rows[i]["INITUOMID"].ToString() + "'>" + Ds.Tables[3].Rows[i]["INITType"].ToString() + "</option>");
         }
-        hdnInitType.Value = sbMstr.ToString();
+        hdnInitTypes.Value = sbMstr.ToString();
 
         //------- UOM 
         sbMstr.Clear();

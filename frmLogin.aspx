@@ -2,8 +2,6 @@
 
 <!DOCTYPE html>
 
-<%--Testing 011 main comit new finl abhinav raj 20-Mar--%>
-
 <html>
 <head runat="server">
     <meta charset="utf-8" />
@@ -68,6 +66,14 @@
         }
     </script>
     
+    <style type="text/css">
+        .error-msg {
+            color: #e60000;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0 35px 15px;
+        }
+    </style>
     <!-- WARNING: Respond.js doesn't work if you view the page via file: -->
     <!--[if lt IE 9]>
   <script src="Scripts/html5shiv.min.js"></script>
@@ -118,7 +124,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="text-center"><span id="dvMessage" runat="server" class="label label-danger labeldanger"></span></div>
+                            <div class="text-center error-msg"><span id="dvMessage" runat="server" class="label label-danger labeldanger"></span></div>
                             <div class="login-box-footer clearfix">
                                 <asp:Button ID="btnSubmit" Text="Login" CssClass="btns btn-submit w-100" runat="server" OnClientClick="return fnValidate();" />
                             </div>

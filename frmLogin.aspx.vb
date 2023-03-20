@@ -44,25 +44,28 @@ Partial Class Login
                 txtUserName.Value = ""
                 txtPassword.Value = ""
             ElseIf (objdr("LoginResult") = 2 Or objdr("LoginResult") = 3) Then
-                Session("LoginID") = objdr("LoginID")
-                Session("UserID") = objdr("UserID")
-                Session("RoleId") = objdr("RoleId")
-                RoleID = objdr("RoleId")
-                Session("NodeType") = objdr("NodeType")
-                Session("NodeId") = objdr("NodeId")
-                Session("UserFullName") = objdr("UserFullName")
-                PassChangeFirst = objdr("flgPasswordChange")
 
-                strTicket = objdr("LoginID")
-                makeTicket(strTicket)
-                varAuthenticate = True
+                If Convert.ToInt16(objdr("flgDormant")) = 1 Then
+                    dvMessage.InnerText = "Login Failed !! It seems you have not login for long and your account became inactive . Contact admin to reenable the same."
+                    txtUserName.Value = ""
+                    txtPassword.Value = ""
+                Else
+                    Session("LoginID") = objdr("LoginID")
+                    Session("UserID") = objdr("UserID")
+                    Session("RoleId") = objdr("RoleId")
+                    RoleID = objdr("RoleId")
+                    Session("NodeType") = objdr("NodeType")
+                    Session("NodeId") = objdr("NodeId")
+                    Session("UserFullName") = objdr("UserFullName")
+                    PassChangeFirst = objdr("flgPasswordChange")
+
+                    strTicket = objdr("LoginID")
+                    makeTicket(strTicket)
+                    varAuthenticate = True
+                End If
             End If
         End If
         objADO.CloseConnection(objCon, objCom, objdr)
-        'If varAuthenticate Then
-        'Response.Write("<script language=javascript>window.location.href='Other/Option.aspx';</script>")
-        'End If
-
         If varAuthenticate Then
             If Convert.ToInt16(RoleID) = 1014 Then
                 Response.Redirect("Data/EntryForms/SWB.aspx")
