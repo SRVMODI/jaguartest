@@ -73,8 +73,8 @@ Partial Class Login
                 Response.Redirect("Data/Other/frmDashboard.aspx")
             End If
         End If
-
     End Sub
+
 
 
     Private Sub makeTicket(ByVal strTicket As String)
