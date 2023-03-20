@@ -1,46 +1,65 @@
-name: build-all
-
-# Controls when the action will run. 
+name: "build-test-dev"
 on:
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - '*.md'
+    types: [opened, synchronize, reopened]
   push:
     branches:
       - main
-  pull_request:
-    types: [opened, synchronize, reopened]
-    
+    paths-ignore:
+      - '*.md'
 
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build-windows:
-    # The type of runner that the job will run on
+  build:
     runs-on: windows-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Set up JDK 11
-        uses: actions/setup-java@v1
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-        with:
-          # Disabling shallow clone is recommended for improving relevancy of reporting
-          fetch-depth: 0
-      - uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-      - uses: microsoft/setup-msbuild@v1
-      - uses: actions/setup-java@v2
-        with:
-          distribution: 'adopt'
-          java-version: '11'
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any   
-      - name: Begin Sonar scan
-        run: |
-          dotnet tool install --global dotnet-sonarscanner
-          dotnet sonarscanner begin /k:"procter-gamble_Jaguar" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
-      - name: End Sonar scan
-        run: |
-          dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+    - uses: actions/checkout@v2
+
+    - name: Setup MSBuild (vswhere-path)
+      id: setup_msbuild_explicit
+      uses: ./
+
+    - name: Setup MSBuild (PATH)
+      id: setup_msbuild_path
+      uses: ./
+
+    - name: Setup MSBuild (fallback)
+      id: setup_msbuild_fallback
+      uses: ./
+
+    - name: Setup MSBuild (x64)
+      if: always()
+      id: setup_msbuild_path_x64
+      uses: ./
+      with:
+        vs-prerelease: true
+        msbuild-architecture: 'x64'
+
+    - name: Setup MSBuild (arm64)
+      if: always()
+      id: setup_msbuild_path_arm
+      uses: ./
+      with:
+        vs-prerelease: true
+        msbuild-architecture: 'arm64'
+
+    - name: echo msbuild path
+      run: |
+        echo "PATH: ${{ steps.setup_msbuild_path.outputs.msbuildPath }}"
+        echo "ARM PATH: ${{ steps.setup_msbuild_path_arm.outputs.msbuildPath }}"
+        echo "ARM PATH: ${{ steps.setup_msbuild_path_x64.outputs.msbuildPath }}"
+        echo "Fallback: ${{ steps.setup_msbuild_fallback.outputs.msbuildPath }}"
+
+    - name: echo MSBuild
+      run: msbuild -version
+    - name: Build and analyze
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+      shell: powershell
+      run: |
+        .\.sonar\scanner\dotnet-sonarscanner begin /k:"procter-gamble_Jaguar" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+        .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+  
