@@ -53,6 +53,7 @@ jobs:
           java-version: '11'
       - name: Build and analyze
         env:
+            DOTNET_VERSION: 6.0.407
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         shell: powershell
         run: |
