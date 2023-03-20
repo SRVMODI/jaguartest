@@ -32,8 +32,6 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '11'
-
-      
           
       - name: Begin Sonar scan
         run: |
