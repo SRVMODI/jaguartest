@@ -8,7 +8,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 env:
-  DOTNET_VERSION: 6.0.x
+  DOTNET_VERSION: 4.7.2
   
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -33,10 +33,7 @@ jobs:
           distribution: 'adopt'
           java-version: '11'
 
-      - name: Restore NuGet packages
-        run: |
-          cd App
-          nuget restore App.sln
+      
           
       - name: Begin Sonar scan
         run: |
