@@ -8,8 +8,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -35,12 +34,13 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '11'
-          
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any   
       - name: Begin Sonar scan
         run: |
           dotnet tool install --global dotnet-sonarscanner
           dotnet sonarscanner begin /k:"procter-gamble_Jaguar" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
-          dotnet build
       - name: End Sonar scan
         run: |
           dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
