@@ -35,11 +35,9 @@ jobs:
           
       - name: Begin Sonar scan
         run: |
-          cd
           dotnet tool install --global dotnet-sonarscanner
-          dotnet sonarscanner begin /k:"procter-gamble_Jaguar" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
-     
-     - name: End Sonar scan
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"procter-gamble_Jaguar" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+          dotnet build
+      - name: End Sonar scan
         run: |
-          cd
-          dotnet sonarscanner end /k:"procter-gamble_Jaguar" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+          dotnet sonarscanner end begin /k:"procter-gamble_Jaguar" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
