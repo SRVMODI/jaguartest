@@ -43,6 +43,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"SRVMODI_jaguartest" /o:"srvmodi" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet build jaguartest/JaguarTradePlanner.sln
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"SRVMODI_jaguartest" /o:"srvmodi" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+          dotnet build https://github.dev/SRVMODI/jaguartest/blob/ca8510312053080e92751f8424e4ce183d50e13e/JaguarTradePlanner.sln
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
