@@ -1,7 +1,8 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="frmLogin.aspx.vb" Inherits="Login" %>
 
 <!DOCTYPE html>
-<%--Testing by Saurav at 10:54 --%>
+<%--Testing by Saurav at 11:36 --%>
+>>>>>>>>> Temporary merge branch 2
 
 <html>
 <head runat="server">
